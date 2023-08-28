@@ -21,7 +21,7 @@ def 'main log' [] {
   get-repositories | each { |repository|
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
-    git -C $local_path log --output=/dev/stdout $"--pretty=%cI | ($repository_path) | %h | %s"
+    git -C $local_path log --output=/dev/stdout $"--format=%cI | ($repository_path) | %h | %s"
   }
 
   return
