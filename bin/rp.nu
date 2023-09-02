@@ -48,7 +48,7 @@ def 'main log' [
       $"(ansi green_bold)committer_email(ansi reset)": $it.committer_email
       $"(ansi green_bold)repository_path(ansi reset)": $"(ansi cyan)($it.repository_path)(ansi reset)"
       $"(ansi green_bold)commit_hash(ansi reset)": $"(ansi yellow)($it.commit_hash)(ansi reset)"
-      $"(ansi green_bold)subject(ansi reset)": $it.subject
+      $"(ansi green_bold)subject(ansi reset)": ($it.subject | gitmojify)
     }
   } else {
     $it
@@ -91,6 +91,82 @@ def get-repository-path [remote: string, name: string] {
 
 def get-rp-path [] {
   $"($env.HOME)/work"
+}
+
+def gitmojify [] {
+  str replace ':art:' '🎨'
+  | str replace ':zap:' '⚡️'
+  | str replace ':fire:' '🔥'
+  | str replace ':bug:' '🐛'
+  | str replace ':ambulance:' '🚑️'
+  | str replace ':sparkles:' '✨'
+  | str replace ':memo:' '📝'
+  | str replace ':rocket:' '🚀'
+  | str replace ':lipstick:' '💄'
+  | str replace ':tada:' '🎉'
+  | str replace ':white_check_mark:' '✅'
+  | str replace ':lock:' '🔒️'
+  | str replace ':closed_lock_with_key:' '🔐'
+  | str replace ':bookmark:' '🔖'
+  | str replace ':rotating_light:' '🚨'
+  | str replace ':construction:' '🚧'
+  | str replace ':green_heart:' '💚'
+  | str replace ':arrow_down:' '⬇️'
+  | str replace ':arrow_up:' '⬆️'
+  | str replace ':pushpin:' '📌'
+  | str replace ':construction_worker:' '👷'
+  | str replace ':chart_with_upwards_trend:' '📈'
+  | str replace ':recycle:' '♻️'
+  | str replace ':heavy_plus_sign:' '➕'
+  | str replace ':heavy_minus_sign:' '➖'
+  | str replace ':wrench:' '🔧'
+  | str replace ':hammer:' '🔨'
+  | str replace ':globe_with_meridians:' '🌐'
+  | str replace ':pencil2:' '✏️'
+  | str replace ':poop:' '💩'
+  | str replace ':rewind:' '⏪️'
+  | str replace ':twisted_rightwards_arrows:' '🔀'
+  | str replace ':package:' '📦️'
+  | str replace ':alien:' '👽️'
+  | str replace ':truck:' '🚚'
+  | str replace ':page_facing_up:' '📄'
+  | str replace ':boom:' '💥'
+  | str replace ':bento:' '🍱'
+  | str replace ':wheelchair:' '♿️'
+  | str replace ':bulb:' ':bulb:'
+  | str replace ':beers:' '🍻'
+  | str replace ':speech_balloon:' '💬'
+  | str replace ':card_file_box:' '🗃️'
+  | str replace ':loud_sound:' '🔊'
+  | str replace ':mute:' '🔇'
+  | str replace ':busts_in_silhouette:' '👥'
+  | str replace ':children_crossing:' '🚸'
+  | str replace ':building_construction:' '🏗️'
+  | str replace ':iphone:' '📱'
+  | str replace ':clown_face:' '🤡'
+  | str replace ':egg:' '🥚'
+  | str replace ':see_no_evil:' '🙈'
+  | str replace ':camera_flash:' '📸'
+  | str replace ':alembic:' '⚗️'
+  | str replace ':mag:' '🔍️'
+  | str replace ':label:' '🏷️'
+  | str replace ':seedling:' '🌱'
+  | str replace ':triangular_flag_on_post:' '🚩'
+  | str replace ':goal_net:' '🥅'
+  | str replace ':dizzy:' '💫'
+  | str replace ':wastebasket:' '🗑️'
+  | str replace ':passport_control:' '🛂'
+  | str replace ':adhesive_bandage:' '🩹'
+  | str replace ':monocle_face:' '🧐'
+  | str replace ':coffin:' ':coffin:'
+  | str replace ':test_tube:' '🧪'
+  | str replace ':necktie:' '👔'
+  | str replace ':stethoscope:' '🩺'
+  | str replace ':bricks:' '🧱'
+  | str replace ':technologist:' '🧑‍💻'
+  | str replace ':money_with_wings:' '💸'
+  | str replace ':thread:' '🧵'
+  | str replace ':safety_vest:' '🦺'
 }
 
 def join-rp-path [repository_path: string] {
