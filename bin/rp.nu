@@ -58,11 +58,17 @@ def 'main log' [
   | if $no_pager { cat } else { column -ts "\t" | pager }
 }
 
-def 'main pull' [] {
+def 'main pull' [--no-color: bool] {
   get-repositories | each { |repository|
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
-    print $"\n> ($repository_path)\n"
+
+    if $no_color {
+      print $"\n> ($repository_path)\n"
+    } else {
+      print $"\n(ansi green_bold)>(ansi reset) ($repository_path)\n"
+    }
+
     git -C $local_path pull
   }
 
