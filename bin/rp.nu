@@ -17,7 +17,7 @@ def 'main clone' [] {
   return
 }
 
-def 'main log' [] {
+def 'main log' [--color: bool] {
   let header = [
     'committer_date'
     'repository_path'
@@ -28,7 +28,11 @@ def 'main log' [] {
   | each { |repository|
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
-    let format = $"%cI\t($repository_path)\t%H\t%s"
+    let format = if $color {
+      $"(ansi magenta)%cI(ansi reset)\t(ansi cyan)($repository_path)(ansi reset)\t(ansi yellow)%H(ansi reset)\t%s"
+    } else {
+      $"%cI\t($repository_path)\t%H\t%s"
+    }
     git -C $local_path log --output=/dev/stdout $"--format=($format)"
   }
   | str join "\n")
