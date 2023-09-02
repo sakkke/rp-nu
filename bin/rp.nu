@@ -6,11 +6,18 @@ def main [] {
   return
 }
 
-def 'main clone' [] {
+def 'main clone' [--no-color: bool] {
   get-repositories | each { |repository|
     let remote_url = get-remote-url $repository.remote $repository.name
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
+
+    if $no_color {
+      print $"\n> ($repository_path)\n"
+    } else {
+      print $"\n(ansi green_bold)>(ansi reset) ($repository_path)\n"
+    }
+
     git clone $remote_url $local_path
   }
 
