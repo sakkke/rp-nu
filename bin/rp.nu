@@ -17,7 +17,10 @@ def 'main clone' [] {
   return
 }
 
-def 'main log' [--color: bool] {
+def 'main log' [
+  --color: bool
+  --no-pager: bool
+] {
   let header = [
     'committer_date'
     'repository_path'
@@ -42,6 +45,7 @@ def 'main log' [--color: bool] {
   | sort-by committer_date
   | reverse
   | to tsv
+  | if $no_pager { cat } else { pager }
 }
 
 def 'main pull' [] {
@@ -85,4 +89,8 @@ def join-rp-path [repository_path: string] {
 
 def open-rp-json [] {
   open $"(get-rp-path)/rp.json"
+}
+
+def pager [] {
+  less -R
 }
