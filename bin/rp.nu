@@ -178,5 +178,5 @@ def open-rp-json [] {
 }
 
 def pager [] {
-  less -R
+  less -RS
 }
