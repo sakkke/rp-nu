@@ -62,7 +62,7 @@ def 'main pull' [] {
   get-repositories | each { |repository|
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
-    print $"Pulling '($repository_path)'..."
+    print $"\n> ($repository_path)\n"
     git -C $local_path pull
   }
 
