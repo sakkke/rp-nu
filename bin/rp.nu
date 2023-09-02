@@ -18,7 +18,7 @@ def 'main clone' [] {
 }
 
 def 'main log' [
-  --color: bool
+  --no-color: bool
   --no-pager: bool
 ] {
   let header = [
@@ -41,7 +41,9 @@ def 'main log' [
   $"($header)\n($body)"
   | from tsv
   | sort-by 'committer_date'
-  | each { |it| if $color {
+  | each { |it| if $no_color {
+    $it
+  } else {
     {
       $"(ansi green_bold)committer_date(ansi reset)": $"(ansi magenta)($it.committer_date)(ansi reset)"
       $"(ansi green_bold)committer_name(ansi reset)": $it.committer_name
@@ -50,8 +52,6 @@ def 'main log' [
       $"(ansi green_bold)commit_hash(ansi reset)": $"(ansi yellow)($it.commit_hash)(ansi reset)"
       $"(ansi green_bold)subject(ansi reset)": ($it.subject | gitmojify)
     }
-  } else {
-    $it
   } }
   | reverse
   | to tsv
