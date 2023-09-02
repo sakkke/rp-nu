@@ -18,14 +18,22 @@ def 'main clone' [] {
 }
 
 def 'main log' [] {
-  get-repositories | each { |repository|
+  let header = [
+    'committer_date'
+    'repository_path'
+    'commit_hash'
+    'subject'
+  ] | str join "\t"
+  let body = (get-repositories
+  | each { |repository|
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
-    let format = $"%cI | ($repository_path) | %h | %s"
+    let format = $"%cI\t($repository_path)\t%h\t%s"
     git -C $local_path log --output=/dev/stdout $"--format=($format)"
   }
+  | str join "\n")
 
-  return
+  $"($header)\n($body)"
 }
 
 def 'main pull' [] {
