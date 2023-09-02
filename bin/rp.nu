@@ -12,6 +12,10 @@ def 'main clone' [--no-color: bool] {
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
 
+    if ($local_path | path exists) {
+      continue
+    }
+
     if $no_color {
       print $"\n> ($repository_path)\n"
     } else {
