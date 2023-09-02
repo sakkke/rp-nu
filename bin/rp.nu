@@ -24,6 +24,7 @@ def 'main log' [
   let header = if $color {
     [
       $"(ansi green_bold)committer_date(ansi reset)"
+      $"(ansi green_bold)committer_name(ansi reset)"
       $"(ansi green_bold)repository_path(ansi reset)"
       $"(ansi green_bold)commit_hash(ansi reset)"
       $"(ansi green_bold)subject(ansi reset)"
@@ -31,6 +32,7 @@ def 'main log' [
   } else {
     [
       'committer_date'
+      'committer_name'
       'repository_path'
       'commit_hash'
       'subject'
@@ -41,9 +43,9 @@ def 'main log' [
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
     let format = if $color {
-      $"(ansi magenta)%cI(ansi reset)\t(ansi cyan)($repository_path)(ansi reset)\t(ansi yellow)%H(ansi reset)\t%s"
+      $"(ansi magenta)%cI(ansi reset)\t%cn\t(ansi cyan)($repository_path)(ansi reset)\t(ansi yellow)%H(ansi reset)\t%s"
     } else {
-      $"%cI\t($repository_path)\t%H\t%s"
+      $"%cI\t%cn\t($repository_path)\t%H\t%s"
     }
     git -C $local_path log --output=/dev/stdout $"--format=($format)"
   }
@@ -54,7 +56,7 @@ def 'main log' [
   | sort-by (if $color { $"(ansi green_bold)committer_date(ansi reset)" } else { 'committer_date' })
   | reverse
   | to tsv
-  | if $no_pager { cat } else { pager }
+  | if $no_pager { cat } else { column -ts "\t" | pager }
 }
 
 def 'main pull' [] {
