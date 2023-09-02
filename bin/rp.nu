@@ -21,12 +21,21 @@ def 'main log' [
   --color: bool
   --no-pager: bool
 ] {
-  let header = [
-    'committer_date'
-    'repository_path'
-    'commit_hash'
-    'subject'
-  ] | str join "\t"
+  let header = if $color {
+    [
+      $"(ansi green_bold)committer_date(ansi reset)"
+      $"(ansi green_bold)repository_path(ansi reset)"
+      $"(ansi green_bold)commit_hash(ansi reset)"
+      $"(ansi green_bold)subject(ansi reset)"
+    ]
+  } else {
+    [
+      'committer_date'
+      'repository_path'
+      'commit_hash'
+      'subject'
+    ]
+  } | str join "\t"
   let body = (get-repositories
   | each { |repository|
     let repository_path = get-repository-path $repository.remote $repository.name
@@ -42,7 +51,7 @@ def 'main log' [
 
   $"($header)\n($body)"
   | from tsv
-  | sort-by committer_date
+  | sort-by (if $color { $"(ansi green_bold)committer_date(ansi reset)" } else { 'committer_date' })
   | reverse
   | to tsv
   | if $no_pager { cat } else { pager }
