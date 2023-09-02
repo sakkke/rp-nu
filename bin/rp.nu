@@ -34,6 +34,10 @@ def 'main log' [] {
   | str join "\n")
 
   $"($header)\n($body)"
+  | from tsv
+  | sort-by committer_date
+  | reverse
+  | to tsv
 }
 
 def 'main pull' [] {
