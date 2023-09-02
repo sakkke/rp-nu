@@ -21,41 +21,38 @@ def 'main log' [
   --color: bool
   --no-pager: bool
 ] {
-  let header = if $color {
-    [
-      $"(ansi green_bold)committer_date(ansi reset)"
-      $"(ansi green_bold)committer_name(ansi reset)"
-      $"(ansi green_bold)committer_email(ansi reset)"
-      $"(ansi green_bold)repository_path(ansi reset)"
-      $"(ansi green_bold)commit_hash(ansi reset)"
-      $"(ansi green_bold)subject(ansi reset)"
-    ]
-  } else {
-    [
-      'committer_date'
-      'committer_name'
-      'committer_email'
-      'repository_path'
-      'commit_hash'
-      'subject'
-    ]
-  } | str join "\t"
+  let header = [
+    'committer_date'
+    'committer_name'
+    'committer_email'
+    'repository_path'
+    'commit_hash'
+    'subject'
+  ] | str join "\t"
   let body = (get-repositories
   | each { |repository|
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
-    let format = if $color {
-      $"(ansi magenta)%cI(ansi reset)\t%cn\t%ce\t(ansi cyan)($repository_path)(ansi reset)\t(ansi yellow)%H(ansi reset)\t%s"
-    } else {
-      $"%cI\t%cn\t%ce\t($repository_path)\t%H\t%s"
-    }
+    let format = $"%cI\t%cn\t%ce\t($repository_path)\t%H\t%s"
     git -C $local_path log --output=/dev/stdout $"--format=($format)"
   }
   | str join "\n")
 
   $"($header)\n($body)"
   | from tsv
-  | sort-by (if $color { $"(ansi green_bold)committer_date(ansi reset)" } else { 'committer_date' })
+  | sort-by 'committer_date'
+  | each { |it| if $color {
+    {
+      $"(ansi green_bold)committer_date(ansi reset)": $"(ansi magenta)($it.committer_date)(ansi reset)"
+      $"(ansi green_bold)committer_name(ansi reset)": $it.committer_name
+      $"(ansi green_bold)committer_email(ansi reset)": $it.committer_email
+      $"(ansi green_bold)repository_path(ansi reset)": $"(ansi cyan)($it.repository_path)(ansi reset)"
+      $"(ansi green_bold)commit_hash(ansi reset)": $"(ansi yellow)($it.commit_hash)(ansi reset)"
+      $"(ansi green_bold)subject(ansi reset)": $it.subject
+    }
+  } else {
+    $it
+  } }
   | reverse
   | to tsv
   | if $no_pager { cat } else { column -ts "\t" | pager }
