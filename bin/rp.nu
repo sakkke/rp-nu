@@ -38,13 +38,14 @@ def 'main log' [
     'committer_email'
     'repository_path'
     'commit_hash'
+    'ref_names'
     'subject'
   ] | str join "\t"
   let body = (get-repositories
   | each { |repository|
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
-    let format = $"%cI\t%cn\t%ce\t($repository_path)\t%H\t%s"
+    let format = $"%cI\t%cn\t%ce\t($repository_path)\t%H\t%D\t%s"
     git -C $local_path log --output=/dev/stdout $"--format=($format)"
   }
   | str join "\n")
@@ -61,6 +62,7 @@ def 'main log' [
       $"(ansi green_bold)committer_email(ansi reset)": $it.committer_email
       $"(ansi green_bold)repository_path(ansi reset)": $"(ansi cyan)($it.repository_path)(ansi reset)"
       $"(ansi green_bold)commit_hash(ansi reset)": $"(ansi yellow)($it.commit_hash)(ansi reset)"
+      $"(ansi green_bold)ref_names(ansi reset)": $"(ansi yellow)($it.ref_names)(ansi reset)"
       $"(ansi green_bold)subject(ansi reset)": ($it.subject | gitmojify)
     }
   } }
