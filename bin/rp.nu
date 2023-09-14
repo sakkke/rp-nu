@@ -46,7 +46,7 @@ def 'main log' [
     let repository_path = get-repository-path $repository.remote $repository.name
     let local_path = join-rp-path $repository_path
     let format = $"%cI\t%cn\t%ce\t($repository_path)\t%H\t%D\t%s"
-    git -C $local_path log --output=/dev/stdout $"--format=($format)"
+    git -C $local_path log --output=(get-null-path) $"--format=($format)"
   }
   | str join "\n")
 
@@ -96,6 +96,22 @@ def get-fetch-url [remote: string] {
   | get fetch
 }
 
+def get-home-path [] {
+  if $nu.os-info.name == windows {
+    return $env.USERPROFILE
+  }
+
+  $env.HOME
+}
+
+def get-null-path [] {
+  if $nu.os-info.name == windows {
+    return nul
+  }
+
+  /dev/null
+}
+
 def get-remote-url [remote: string, name: string] {
   $"(get-fetch-url $remote)($name)"
 }
@@ -105,11 +121,11 @@ def get-repositories [] {
 }
 
 def get-repository-path [remote: string, name: string] {
-  $"($remote)/($name)"
+  [$remote $name] | path join
 }
 
 def get-rp-path [] {
-  $"($env.HOME)/work"
+  [(get-home-path) work] | path join
 }
 
 def gitmojify [] {
@@ -189,11 +205,11 @@ def gitmojify [] {
 }
 
 def join-rp-path [repository_path: string] {
-  $"(get-rp-path)/($repository_path)"
+  [(get-rp-path) $repository_path] | path join
 }
 
 def open-rp-json [] {
-  open $"(get-rp-path)/rp.json"
+  open ([(get-rp-path) rp.json] | path join)
 }
 
 def pager [] {
