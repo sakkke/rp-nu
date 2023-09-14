@@ -1,5 +1,3 @@
-#!/usr/bin/env nu
-
 def main [] {
   cd (get-rp-path)
   main clone
@@ -125,6 +123,10 @@ def get-repository-path [remote: string, name: string] {
 }
 
 def get-rp-path [] {
+  if $env.RP_PATH? != null {
+    return $env.RP_PATH
+  }
+
   [(get-home-path) work] | path join
 }
 
