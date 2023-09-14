@@ -122,6 +122,14 @@ def get-repository-path [remote: string, name: string] {
   [$remote $name] | path join
 }
 
+def get-rp-manifest-path [] {
+  if $env.RP_MANIFEST? != null {
+    return $env.RP_MANIFEST
+  }
+
+  [(get-rp-path) rp.json] | path join
+}
+
 def get-rp-path [] {
   if $env.RP_PATH? != null {
     return $env.RP_PATH
@@ -211,7 +219,7 @@ def join-rp-path [repository_path: string] {
 }
 
 def open-rp-json [] {
-  open ([(get-rp-path) rp.json] | path join)
+  open (get-rp-manifest-path)
 }
 
 def pager [] {
